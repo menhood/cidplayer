@@ -1,28 +1,22 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-    
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>在线观看</title>
-        <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-        <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-        <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-        <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-        <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <title>DPlayer-Online</title>
     </head>
     
     <body>
-
-<div class="row" >
-        <div class="col-md-2 column ">
-        <button type="button" class="btn btn-info btn-lg" id="toggleplayer">Start！</button>
-        </div></div>
-        <div class="form-group" id="online-player" style="display:none" >
+        <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        
+        <div class="col-md-12 column">
+        <div class="form-group" id="online-player"  >
         <video style="display:none;" controls="controls" id="aa" oncanplaythrough="myfunction(this)"></video>
         <div id="onlineurl"><h2>在线 </h2><a href="javascript:void(0)" onclick="changemode()" class="btn btn-danger">切换模式</a><br>
 
             <label for="iurl">请输入视频直链地址：</label>
-            <input id="iurl" type="text" value="https://menhood.320.io/?/%E5%8A%A8%E6%BC%AB/VioletEvergarden/%E3%82%A2%E3%83%8B%E3%83%A1%E3%80%8E%E3%83%B4%E3%82%A1%E3%82%A4%E3%82%AA%E3%83%AC%E3%83%83%E3%83%88%E3%83%BB%E3%82%A8%E3%83%B4%E3%82%A1%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%80%8FPV%E7%AC%AC4%E5%BC%BE.mp4" class="form-control" />
+            <input id="iurl" type="text" value="https://ddns.menhood.wang:2233/files/%E5%8A%A8%E6%BC%AB/VioletEvergarden/%E3%82%A2%E3%83%8B%E3%83%A1%E3%80%8E%E3%83%B4%E3%82%A1%E3%82%A4%E3%82%AA%E3%83%AC%E3%83%83%E3%83%88%E3%83%BB%E3%82%A8%E3%83%B4%E3%82%A1%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%80%8FPV%E7%AC%AC4%E5%BC%BE.mp4" class="form-control" />
             <p class="help-block">只支持可以直接播放的链接</p>
         </div>
         <div id="local" style="display:none"><h2>本地 </h2><a href="javascript:void(0)" onclick="changemode()" class="btn btn-danger">切换模式</a><br>
@@ -39,28 +33,49 @@
         
         </div>
         <div class="btn-group">
-        <button onclick="getcid()" id="getcidbtn" class="btn btn-info" style="display:none">获取cid</button>
+        <a id="getcidbtn" href="#modal-container-410667" onclick="getcid()" class="btn btn-info" style="display:none" data-toggle="modal" >获取cid</a>
         <button onclick="loaddplayer()" class="btn btn-info">载入播放器</button>
         </div>
-        </div>
+			
+			<div class="modal fade" id="modal-container-410667" role="dialog" aria-labelledby="cid-info" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+							<h4 class="modal-title" id="cid-info">
+								cid数据
+							</h4>
+						</div>
+						<div class="modal-body" >
+							<pre id="res-data">
+							    
+							</pre>
+						</div>
+						<div class="modal-footer">
+							 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						</div>
+                    </div>
+                </div>
+            </div>
         <div id="dplayer" style="margin:8px;width:98%"></div>
         <link rel="stylesheet" href="https://unpkg.com/dplayer@1.25.0/dist/DPlayer.min.css">
         <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
         <script src="https://unpkg.com/dplayer@1.25.0/dist/DPlayer.min.js"></script>
+        <script src="https://api.menhood.wang/getcip/getcipv2.php"></script>
         <script>
+        
         $("#togglegetcid").click(function() {
         $("#getcid").slideToggle();
         $("#getcidbtn").slideToggle();
         });
         function getcid(){
             var bzurl=$("#bzurl").val();
-            $.ajax({url:"https://api.menhood.wang/getcid/?url="+bzurl,success:function(result){
-            $("#iid").val(result);
+            $.ajax({url:"https://api.menhood.wang/getcid/?url="+bzurl,
+            success:function(result){
+                $("#res-data").html(result);
             }});
         }
-        $("#toggleplayer").click(function() {
-       $("#online-player").slideToggle();
-        });
+
         function changemode() {
             if ($("#local").css("display") === "none") {
                 $("#onlineurl").hide();
@@ -72,13 +87,13 @@
         }
 
         function myfunction(ele) {
-            console.log(Math.floor(ele.duration));
+            console.log("视频时长："+Math.floor(ele.duration)+"s");
         }
 
         function changefile(ele) {
             var video = ele.files[0];
             var url = URL.createObjectURL(video);
-            console.log(url);
+            console.log("视频地址："+url);
             document.getElementById("aa").src = url;
         }
 
@@ -97,17 +112,16 @@
                 },
                 danmaku: {
                     id: md5(url),
-                    api: 'https://api.prprpr.me/dplayer/',
+                    api: 'https://api.menhood.wang/dplayer/',
                     token: 'tokendemo',
                     maximum: 1000,
-                    addition: ['https://api.prprpr.me/dplayer/v3/bilibili?cid=' + cid],
-                    user: 'Menhood-test',
+                    addition: ['https://api.menhood.wang/dplayer/v3/bilibili/?cid=' + cid],
+                    user: cip,
                     bottom: '15%',
                     unlimited: true
                 }
             });
         }
         </script>
-</body>
-
-</html>        
+    </body>
+</html>
